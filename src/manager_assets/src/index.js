@@ -1,19 +1,48 @@
-import { manager } from "../../declarations/manager";
+import { Actor, HttpAgent } from '@dfinity/agent';
+import { child_can } from '../../declarations/child_can';
+import { idlFactory } from '../../declarations/bucket';
 
-document.querySelector("form").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const button = e.target.querySelector("button");
+export const createBucketActor = async ({ canisterId }) => {
+  const agent = new HttpAgent();
 
-  const name = document.getElementById("name").value.toString();
+  if (process.env.NODE_ENV !== 'production') {
+    await agent.fetchRootKey();
+  }
 
-  button.setAttribute("disabled", true);
+  return Actor.createActor(idlFactory, {
+    agent,
+    canisterId
+  });
+};
 
-  // Interact with foo actor, calling the greet method
-  const greeting = await manager.greet(name);
+let bucket;
 
-  button.removeAttribute("disabled");
+const initCanister = async () => {
+  try {
+    bucket = await child_can.init();
+    console.log('New bucket:', bucket.toText());
+  } catch (err) {
+    console.error(err);
+  }
+};
 
-  document.getElementById("greeting").innerText = greeting;
+const sayHello = async () => {
+  try {
+    const actor = await createBucketActor({
+      canisterId: bucket
+    });
+    console.log(await actor.say());
+  } catch (err) {
+    console.error(err);
+  }
+};
 
-  return false;
-});
+const init = () => {
+  const btnInit = document.querySelector('button#init');
+  btnInit.addEventListener('click', initCanister);
+
+  const btnSay = document.querySelector('button#say');
+  btnSay.addEventListener('click', sayHello);
+};
+
+document.addEventListener('DOMContentLoaded', init);
