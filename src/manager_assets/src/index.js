@@ -1,5 +1,5 @@
 import { Actor, HttpAgent } from '@dfinity/agent';
-import { child_can } from '../../declarations/child_can';
+import { manager } from '../../declarations/manager';
 import { idlFactory } from '../../declarations/bucket';
 
 export const createBucketActor = async ({ canisterId }) => {
@@ -19,7 +19,7 @@ let bucket;
 
 const initCanister = async () => {
   try {
-    bucket = await child_can.init();
+    bucket = await manager.init();
     console.log('New bucket:', bucket.toText());
   } catch (err) {
     console.error(err);

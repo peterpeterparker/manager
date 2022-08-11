@@ -2,7 +2,7 @@ import {Principal} from "@dfinity/principal";
 import {IDL} from '@dfinity/candid';
 import {readFileSync} from 'fs';
 
-import {idlFactory} from './.dfx/local/canisters/child_can/child_can.did.mjs';
+import {idlFactory} from './.dfx/local/canisters/manager/manager.did.mjs';
 import fetch from 'node-fetch';
 import {HttpAgent, Actor} from '@dfinity/agent';
 
@@ -13,14 +13,14 @@ const loadWasm = () => {
 
 const managerPrincipalLocal = () => {
     const buffer = readFileSync('./.dfx/local/canister_ids.json');
-    const {child_can} = JSON.parse(buffer.toString('utf-8'));
-    return Principal.fromText(child_can.local);
+    const {manager} = JSON.parse(buffer.toString('utf-8'));
+    return Principal.fromText(manager.local);
 };
 
 const managerPrincipalIC = () => {
     const buffer = readFileSync('./canister_ids.json');
-    const {child_can} = JSON.parse(buffer.toString('utf-8'));
-    return Principal.fromText(child_can.ic);
+    const {manager} = JSON.parse(buffer.toString('utf-8'));
+    return Principal.fromText(manager.ic);
 };
 
 const managerActor = async () => {
