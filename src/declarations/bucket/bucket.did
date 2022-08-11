@@ -1,0 +1,5 @@
+type Bucket = 
+ service {
+   say: () -> (text) query;
+ };
+service : (text) -> Bucket
